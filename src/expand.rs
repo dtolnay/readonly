@@ -47,15 +47,16 @@ pub fn readonly(input: DeriveInput) -> Result<TokenStream> {
         }
     }
 
+    let ident = &input.ident;
+    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+
+    let self_path: Path = parse_quote!(#ident #ty_generics);
     for field in readonly_fields {
-        ReplaceSelf::new(&input.ident).visit_type_mut(&mut field.ty);
+        ReplaceSelf::new(&self_path).visit_type_mut(&mut field.ty);
     }
 
     readonly.ident = Ident::new(&format!("ReadOnly{}", input.ident), call_site);
-
-    let ident = &input.ident;
     let readonly_ident = &readonly.ident;
-    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
 
     Ok(quote! {
         #input
@@ -132,11 +133,11 @@ fn find_and_strip_readonly_attrs(input: &mut DeriveInput) -> Vec<usize> {
 }
 
 struct ReplaceSelf<'a> {
-    with: &'a Ident,
+    with: &'a Path,
 }
 
 impl<'a> ReplaceSelf<'a> {
-    fn new(with: &'a Ident) -> Self {
+    fn new(with: &'a Path) -> Self {
         ReplaceSelf { with }
     }
 }
@@ -144,10 +145,9 @@ impl<'a> ReplaceSelf<'a> {
 impl<'a> VisitMut for ReplaceSelf<'a> {
     fn visit_path_mut(&mut self, path: &mut Path) {
         if path.is_ident("Self") {
-            let ident = &mut path.segments[0].ident;
-            let span = ident.span();
-            *ident = self.with.clone();
-            ident.set_span(span);
+            let span = path.segments[0].ident.span();
+            *path = self.with.clone();
+            path.segments[0].ident.set_span(span);
         } else {
             visit_mut::visit_path_mut(self, path);
         }
