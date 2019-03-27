@@ -10,7 +10,7 @@ and writable from within the same module but readable only outside the module.
 
 ```toml
 [dependencies]
-readonly = "0.0"
+readonly = "0.1"
 ```
 
 ## Syntax
