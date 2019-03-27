@@ -1,0 +1,17 @@
+[package]
+name = "readonly"
+version = "0.0.0" # remember to update number in readme for major versions
+authors = ["David Tolnay <dtolnay@gmail.com>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "0.4"
+quote = "0.6"
+syn = { version = "0.15", features = ["visit-mut"] }
+
+[dev-dependencies]
+compiletest = { package = "compiletest_rs", version = "0.3", features = ["stable"] }
+version_check = "0.1"
