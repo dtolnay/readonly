@@ -144,7 +144,10 @@ impl<'a> ReplaceSelf<'a> {
 impl<'a> VisitMut for ReplaceSelf<'a> {
     fn visit_path_mut(&mut self, path: &mut Path) {
         if path.is_ident("Self") {
-            path.segments[0].ident = self.with.clone();
+            let ident = &mut path.segments[0].ident;
+            let span = ident.span();
+            *ident = self.with.clone();
+            ident.set_span(span);
         } else {
             visit_mut::visit_path_mut(self, path);
         }
