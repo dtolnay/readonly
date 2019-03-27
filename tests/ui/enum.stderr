@@ -1,0 +1,8 @@
+error: input must be a struct
+ --> $DIR/enum.rs:1:1
+  |
+1 | #[readonly::make]
+  | ^^^^^^^^^^^^^^^^^
+
+error: aborting due to previous error
+
