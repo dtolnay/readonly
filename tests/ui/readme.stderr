@@ -3,6 +3,3 @@ error[E0594]: cannot assign to data in a `&` reference
    |
 21 |     s.n += 1;
    |     ^^^^^^^^ cannot assign
-
-error: aborting due to previous error
-

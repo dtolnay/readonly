@@ -3,6 +3,3 @@ error: input must be a struct with fields
   |
 1 | #[readonly::make]
   | ^^^^^^^^^^^^^^^^^
-
-error: aborting due to previous error
-
