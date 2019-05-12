@@ -39,6 +39,8 @@ pub fn readonly(args: Args, input: DeriveInput) -> Result<TokenStream> {
     }
 
     let mut readonly = input.clone();
+    readonly.attrs.insert(0, parse_quote!(#[doc(hidden)]));
+
     let input_vis = input.vis.clone();
     let input_fields = fields_of_input(&mut input);
     let readonly_fields = fields_of_input(&mut readonly);
