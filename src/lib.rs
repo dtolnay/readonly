@@ -35,7 +35,7 @@
 //! The error appears as follows.
 //!
 //! ```console
-//! error[E0594]: cannot assign to data in a `&` reference
+//! error[E0594]: cannot assign to data in a dereference of `m::S`
 //!   --> readme.rs:21:5
 //!    |
 //! 21 |     s.n += 1;
