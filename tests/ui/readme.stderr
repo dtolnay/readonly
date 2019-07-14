@@ -1,5 +1,7 @@
-error[E0594]: cannot assign to data in a `&` reference
+error[E0594]: cannot assign to data in a dereference of `m::S`
   --> $DIR/readme.rs:21:5
    |
 21 |     s.n += 1;
    |     ^^^^^^^^ cannot assign
+   |
+   = help: trait `DerefMut` is required to modify through a dereference, but it is not implemented for `m::S`
