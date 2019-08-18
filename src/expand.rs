@@ -101,16 +101,16 @@ fn has_defined_repr(input: &DeriveInput) -> bool {
             _ => continue,
         };
 
-        if meta.ident != "repr" || meta.nested.len() != 1 {
+        if meta.path.is_ident("repr") || meta.nested.len() != 1 {
             continue;
         }
 
-        let ident = match &meta.nested[0] {
-            NestedMeta::Meta(Meta::Word(ident)) => ident,
+        let path = match &meta.nested[0] {
+            NestedMeta::Meta(Meta::Path(path)) => path,
             _ => continue,
         };
 
-        if ident == "C" || ident == "transparent" || ident == "packed" {
+        if path.is_ident("C") || path.is_ident("transparent") || path.is_ident("packed") {
             return true;
         }
     }
