@@ -3,3 +3,5 @@ error: input must be a struct with fields
   |
 1 | #[readonly::make]
   | ^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
