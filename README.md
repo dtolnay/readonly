@@ -1,7 +1,7 @@
 Readonly
 ========
 
-[![Build Status](https://api.travis-ci.com/dtolnay/readonly.svg?branch=master)](https://travis-ci.com/dtolnay/readonly)
+[![Build Status](https://img.shields.io/github/workflow/status/dtolnay/readonly/CI/master)](https://github.com/dtolnay/readonly/actions?query=branch%3Amaster)
 [![Latest Version](https://img.shields.io/crates/v/readonly.svg)](https://crates.io/crates/readonly)
 [![Rust Documentation](https://img.shields.io/badge/api-rustdoc-blue.svg)](https://docs.rs/readonly)
 
