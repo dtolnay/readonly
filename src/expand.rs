@@ -29,7 +29,7 @@ pub fn readonly(args: Args, input: DeriveInput) -> Result<TokenStream> {
 
     let original_input = args.doc_cfg.as_ref().map(|doc_cfg| {
         quote! {
-            #[cfg(all(#doc_cfg, rustdoc))]
+            #[cfg(all(#doc_cfg, doc))]
             #input
         }
     });
@@ -70,7 +70,7 @@ pub fn readonly(args: Args, input: DeriveInput) -> Result<TokenStream> {
     let readonly_ident = &readonly.ident;
 
     if let Some(doc_cfg) = args.doc_cfg {
-        let not_doc_cfg = parse_quote!(#[cfg(not(all(#doc_cfg, rustdoc)))]);
+        let not_doc_cfg = parse_quote!(#[cfg(not(all(#doc_cfg, doc)))]);
         input.attrs.insert(0, not_doc_cfg);
     }
 
