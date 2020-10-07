@@ -1,4 +1,3 @@
-use crate::args::Args;
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
 use syn::visit_mut::{self, VisitMut};
@@ -9,7 +8,7 @@ use syn::{
 
 type Punctuated = syn::punctuated::Punctuated<Field, Token![,]>;
 
-pub fn readonly(args: Args, input: DeriveInput) -> Result<TokenStream> {
+pub fn readonly(input: DeriveInput) -> Result<TokenStream> {
     let call_site = Span::call_site();
 
     match &input.data {
@@ -27,12 +26,10 @@ pub fn readonly(args: Args, input: DeriveInput) -> Result<TokenStream> {
 
     let indices = find_and_strip_readonly_attrs(&mut input);
 
-    let original_input = args.doc_cfg.as_ref().map(|doc_cfg| {
-        quote! {
-            #[cfg(all(#doc_cfg, doc))]
-            #input
-        }
-    });
+    let original_input = quote! {
+        #[cfg(doc)]
+        #input
+    };
 
     if !has_defined_repr(&input) {
         input.attrs.push(parse_quote!(#[repr(C)]));
@@ -69,10 +66,7 @@ pub fn readonly(args: Args, input: DeriveInput) -> Result<TokenStream> {
     readonly.ident = Ident::new(&format!("ReadOnly{}", input.ident), call_site);
     let readonly_ident = &readonly.ident;
 
-    if let Some(doc_cfg) = args.doc_cfg {
-        let not_doc_cfg = parse_quote!(#[cfg(not(all(#doc_cfg, doc)))]);
-        input.attrs.insert(0, not_doc_cfg);
-    }
+    input.attrs.insert(0, parse_quote!(#[cfg(not(doc))]));
 
     Ok(quote! {
         #original_input
