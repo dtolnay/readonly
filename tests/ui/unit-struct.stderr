@@ -1,5 +1,5 @@
 error: input must be a struct with fields
- --> $DIR/tests/ui/unit-struct.rs:1:1
+ --> tests/ui/unit-struct.rs:1:1
   |
 1 | #[readonly::make]
   | ^^^^^^^^^^^^^^^^^
