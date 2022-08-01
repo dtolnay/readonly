@@ -2,6 +2,7 @@
 name = "readonly"
 version = "0.2.1" # remember to update number in readme for major versions
 authors = ["David Tolnay <dtolnay@gmail.com>"]
+categories = ["rust-patterns", "no-std"]
 description = "Struct fields that are made read-only accessible to other modules"
 documentation = "https://docs.rs/readonly"
 edition = "2018"
