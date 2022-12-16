@@ -4,7 +4,7 @@ Readonly
 [<img alt="github" src="https://img.shields.io/badge/github-dtolnay/readonly-8da0cb?style=for-the-badge&labelColor=555555&logo=github" height="20">](https://github.com/dtolnay/readonly)
 [<img alt="crates.io" src="https://img.shields.io/crates/v/readonly.svg?style=for-the-badge&color=fc8d62&logo=rust" height="20">](https://crates.io/crates/readonly)
 [<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-readonly-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" height="20">](https://docs.rs/readonly)
-[<img alt="build status" src="https://img.shields.io/github/workflow/status/dtolnay/readonly/CI/master?style=for-the-badge" height="20">](https://github.com/dtolnay/readonly/actions?query=branch%3Amaster)
+[<img alt="build status" src="https://img.shields.io/github/actions/workflow/status/dtolnay/readonly/ci.yml?branch=master&style=for-the-badge" height="20">](https://github.com/dtolnay/readonly/actions?query=branch%3Amaster)
 
 This crate provides an attribute macro to expose struct fields that are readable
 and writable from within the same module but readable only outside the module.
