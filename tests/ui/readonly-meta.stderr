@@ -1,0 +1,11 @@
+error: unexpected token
+ --> tests/ui/readonly-meta.rs:3:16
+  |
+3 |     #[readonly = "..."]
+  |                ^
+
+error: unexpected token
+ --> tests/ui/readonly-meta.rs:6:15
+  |
+6 |     #[readonly(...)]
+  |               ^^^^^
