@@ -1,5 +1,6 @@
 use proc_macro2::{Span, TokenStream};
 use quote::quote;
+use syn::parse::Nothing;
 use syn::visit_mut::{self, VisitMut};
 use syn::{
     parse_quote, Data, DeriveInput, Error, Field, Fields, Ident, Meta, NestedMeta, Path, Result,
@@ -24,7 +25,8 @@ pub fn readonly(input: DeriveInput) -> Result<TokenStream> {
 
     let mut input = input;
 
-    let indices = find_and_strip_readonly_attrs(&mut input);
+    let mut attr_errors = Vec::new();
+    let indices = find_and_strip_readonly_attrs(&mut input, &mut attr_errors);
 
     let original_input = quote! {
         #[cfg(doc)]
@@ -68,6 +70,8 @@ pub fn readonly(input: DeriveInput) -> Result<TokenStream> {
 
     input.attrs.insert(0, parse_quote!(#[cfg(not(doc))]));
 
+    let attr_errors = attr_errors.iter().map(Error::to_compile_error);
+
     Ok(quote! {
         #original_input
 
@@ -85,6 +89,8 @@ pub fn readonly(input: DeriveInput) -> Result<TokenStream> {
                 unsafe { &*(self as *const Self as *const Self::Target) }
             }
         }
+
+        #(#attr_errors)*
     })
 }
 
@@ -123,7 +129,7 @@ fn fields_of_input(input: &mut DeriveInput) -> &mut Punctuated {
     }
 }
 
-fn find_and_strip_readonly_attrs(input: &mut DeriveInput) -> Vec<usize> {
+fn find_and_strip_readonly_attrs(input: &mut DeriveInput, errors: &mut Vec<Error>) -> Vec<usize> {
     let mut indices = Vec::new();
 
     for (i, field) in fields_of_input(input).iter_mut().enumerate() {
@@ -131,6 +137,9 @@ fn find_and_strip_readonly_attrs(input: &mut DeriveInput) -> Vec<usize> {
 
         for (j, attr) in field.attrs.iter().enumerate() {
             if attr.path.is_ident("readonly") {
+                if let Err(err) = syn::parse2::<Nothing>(attr.tokens.clone()) {
+                    errors.push(err);
+                }
                 readonly_attr_index = Some(j);
                 break;
             }
