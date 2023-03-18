@@ -2,8 +2,8 @@ use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::quote;
 use syn::visit_mut::{self, VisitMut};
 use syn::{
-    parse_quote, token, Attribute, Data, DeriveInput, Error, Expr, Field, Fields, Ident, Meta,
-    Path, Result, Token, Visibility,
+    parse_quote, token, Data, DeriveInput, Error, Expr, Field, Fields, Ident, Path, Result, Token,
+    Visibility,
 };
 
 type Punctuated = syn::punctuated::Punctuated<Field, Token![,]>;
@@ -134,7 +134,7 @@ fn find_and_strip_readonly_attrs(input: &mut DeriveInput, errors: &mut Vec<Error
 
         for (j, attr) in field.attrs.iter().enumerate() {
             if attr.path().is_ident("readonly") {
-                if let Err(err) = require_empty_attribute(attr) {
+                if let Err(err) = attr.meta.require_path_only() {
                     errors.push(err);
                 }
                 readonly_attr_index = Some(j);
@@ -149,18 +149,6 @@ fn find_and_strip_readonly_attrs(input: &mut DeriveInput, errors: &mut Vec<Error
     }
 
     indices
-}
-
-fn require_empty_attribute(attr: &Attribute) -> Result<()> {
-    let error_span = match &attr.meta {
-        Meta::Path(_) => return Ok(()),
-        Meta::List(meta) => meta.delimiter.span().open(),
-        Meta::NameValue(meta) => meta.eq_token.span,
-    };
-    Err(Error::new(
-        error_span,
-        "unexpected token in thiserror attribute",
-    ))
 }
 
 struct ReplaceSelf<'a> {

@@ -1,10 +1,10 @@
-error: unexpected token in thiserror attribute
+error: unexpected token in attribute
  --> tests/ui/readonly-meta.rs:3:16
   |
 3 |     #[readonly = "..."]
   |                ^
 
-error: unexpected token in thiserror attribute
+error: unexpected token in attribute
  --> tests/ui/readonly-meta.rs:6:15
   |
 6 |     #[readonly(...)]
