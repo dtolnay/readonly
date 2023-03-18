@@ -1,10 +1,9 @@
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::{Span, TokenStream, TokenTree};
 use quote::quote;
-use syn::parse::Nothing;
 use syn::visit_mut::{self, VisitMut};
 use syn::{
-    parse_quote, Data, DeriveInput, Error, Field, Fields, Ident, Meta, NestedMeta, Path, Result,
-    Token, Visibility,
+    parse_quote, token, Attribute, Data, DeriveInput, Error, Expr, Field, Fields, Ident, Meta,
+    Path, Result, Token, Visibility,
 };
 
 type Punctuated = syn::punctuated::Punctuated<Field, Token![,]>;
@@ -95,27 +94,25 @@ pub fn readonly(input: DeriveInput) -> Result<TokenStream> {
 }
 
 fn has_defined_repr(input: &DeriveInput) -> bool {
+    let mut has_defined_repr = false;
     for attr in &input.attrs {
-        let meta = match attr.parse_meta() {
-            Ok(Meta::List(meta)) => meta,
-            _ => continue,
-        };
-
-        if meta.path.is_ident("repr") || meta.nested.len() != 1 {
+        if !attr.path().is_ident("repr") {
             continue;
         }
-
-        let path = match &meta.nested[0] {
-            NestedMeta::Meta(Meta::Path(path)) => path,
-            _ => continue,
-        };
-
-        if path.is_ident("C") || path.is_ident("transparent") || path.is_ident("packed") {
-            return true;
-        }
+        let _ = attr.parse_nested_meta(|meta| {
+            let path = &meta.path;
+            if path.is_ident("C") || path.is_ident("transparent") || path.is_ident("packed") {
+                has_defined_repr = true;
+            }
+            if meta.input.peek(Token![=]) {
+                let _value: Expr = meta.value()?.parse()?;
+            } else if meta.input.peek(token::Paren) {
+                let _group: TokenTree = meta.input.parse()?;
+            }
+            Ok(())
+        });
     }
-
-    false
+    has_defined_repr
 }
 
 fn fields_of_input(input: &mut DeriveInput) -> &mut Punctuated {
@@ -136,8 +133,8 @@ fn find_and_strip_readonly_attrs(input: &mut DeriveInput, errors: &mut Vec<Error
         let mut readonly_attr_index = None;
 
         for (j, attr) in field.attrs.iter().enumerate() {
-            if attr.path.is_ident("readonly") {
-                if let Err(err) = syn::parse2::<Nothing>(attr.tokens.clone()) {
+            if attr.path().is_ident("readonly") {
+                if let Err(err) = require_empty_attribute(attr) {
                     errors.push(err);
                 }
                 readonly_attr_index = Some(j);
@@ -152,6 +149,18 @@ fn find_and_strip_readonly_attrs(input: &mut DeriveInput, errors: &mut Vec<Error
     }
 
     indices
+}
+
+fn require_empty_attribute(attr: &Attribute) -> Result<()> {
+    let error_span = match &attr.meta {
+        Meta::Path(_) => return Ok(()),
+        Meta::List(meta) => meta.delimiter.span().open(),
+        Meta::NameValue(meta) => meta.eq_token.span,
+    };
+    Err(Error::new(
+        error_span,
+        "unexpected token in thiserror attribute",
+    ))
 }
 
 struct ReplaceSelf<'a> {
