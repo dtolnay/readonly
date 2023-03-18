@@ -68,7 +68,7 @@
 //! # }
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/readonly/0.2.6")]
+#![doc(html_root_url = "https://docs.rs/readonly/0.2.7")]
 
 extern crate proc_macro;
 
