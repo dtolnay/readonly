@@ -76,18 +76,20 @@ pub fn readonly(input: DeriveInput) -> Result<TokenStream> {
 
         #input
 
-        #readonly
+        const _: () = {
+            #readonly
 
-        #[doc(hidden)]
-        impl #impl_generics core::ops::Deref for #ident #ty_generics #where_clause {
-            type Target = #readonly_ident #ty_generics;
+            #[doc(hidden)]
+            impl #impl_generics core::ops::Deref for #ident #ty_generics #where_clause {
+                type Target = #readonly_ident #ty_generics;
 
-            fn deref(&self) -> &Self::Target {
-                // Two repr(C) structs with the same fields are guaranteed to
-                // have the same layout.
-                unsafe { &*(self as *const Self as *const Self::Target) }
+                fn deref(&self) -> &Self::Target {
+                    // Two repr(C) structs with the same fields are guaranteed to
+                    // have the same layout.
+                    unsafe { &*(self as *const Self as *const Self::Target) }
+                }
             }
-        }
+        };
 
         #(#attr_errors)*
     })
