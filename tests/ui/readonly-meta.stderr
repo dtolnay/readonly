@@ -1,11 +1,21 @@
 error: unexpected token in attribute
  --> tests/ui/readonly-meta.rs:3:16
   |
+1 | #[readonly::make]
+  | ----------------- in this procedural macro expansion
+2 | pub struct S {
 3 |     #[readonly = "..."]
   |                ^
+  |
+  = note: this error originates in the attribute macro `readonly::make` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unexpected token in attribute
  --> tests/ui/readonly-meta.rs:6:15
   |
+1 | #[readonly::make]
+  | ----------------- in this procedural macro expansion
+...
 6 |     #[readonly(...)]
   |               ^
+  |
+  = note: this error originates in the attribute macro `readonly::make` (in Nightly builds, run with -Z macro-backtrace for more info)
