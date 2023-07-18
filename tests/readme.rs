@@ -1,3 +1,5 @@
+#![allow(clippy::needless_pass_by_ref_mut)]
+
 mod m {
     #[readonly::make]
     pub struct S {
