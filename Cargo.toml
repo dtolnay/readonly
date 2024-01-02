@@ -1,6 +1,6 @@
 [package]
 name = "readonly"
-version = "0.2.11"
+version = "0.2.12"
 authors = ["David Tolnay <dtolnay@gmail.com>"]
 categories = ["rust-patterns", "no-std", "no-std::no-alloc"]
 description = "Struct fields that are made read-only accessible to other modules"
