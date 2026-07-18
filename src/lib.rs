@@ -68,7 +68,7 @@
 //! # }
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/readonly/0.2.13")]
+#![doc(html_root_url = "https://docs.rs/readonly/0.2.14")]
 #![allow(clippy::elidable_lifetime_names, clippy::needless_lifetimes)]
 
 extern crate proc_macro;
